@@ -2,13 +2,15 @@
 
 namespace SMartins\Exceptions\Tests\Fixtures\Exceptions;
 
-use Exception;
+use Throwable;
 use SMartins\Exceptions\JsonHandler;
 use Illuminate\Auth\Access\AuthorizationException;
 use SMartins\Exceptions\Handlers\NotFoundHttpHandler;
 use SMartins\Exceptions\Handlers\AuthorizationHandler;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -47,10 +49,10 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception): void
     {
         parent::report($exception);
     }
@@ -59,10 +61,10 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @param  \Throwable  $exception
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if ($request->expectsJson()) {
             return $this->jsonResponse($exception);

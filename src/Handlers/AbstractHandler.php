@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use SMartins\Exceptions\JsonApi\Response as JsonApiResponse;
+use SMartins\Exceptions\Response\AbstractResponse;
 use SMartins\Exceptions\Response\ErrorHandledCollectionInterface;
 use SMartins\Exceptions\Response\ErrorHandledInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -21,7 +22,7 @@ abstract class AbstractHandler
     /**
      * The exception thrown.
      *
-     * @var \Exception
+     * @var \Throwable
      */
     protected $exception;
 
@@ -29,7 +30,7 @@ abstract class AbstractHandler
      * An array where the key is the class exception and the value is the handler
      * class that will treat the exception.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $exceptionHandlers = [];
 
@@ -37,7 +38,7 @@ abstract class AbstractHandler
      * An internal array where the key is the exception class and the value is
      * the handler class that will treat the exception.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $internalExceptionHandlers = [
         Exception::class => Handler::class,
@@ -75,13 +76,13 @@ abstract class AbstractHandler
      * @param  string $type Code type from config file
      * @return int
      */
-    public function getCode($type = 'default')
+    public function getCode(string $type = 'default'): int
     {
         if (empty($code = $this->exception->getCode())) {
-            return config('json-exception-handler.codes.'.$type);
+            return (int) config('json-exception-handler.codes.'.$type);
         }
 
-        return $code;
+        return (int) $code;
     }
 
     /**
@@ -90,7 +91,7 @@ abstract class AbstractHandler
      * @return \SMartins\Exceptions\Response\AbstractResponse
      * @throws \SMartins\Exceptions\Response\InvalidContentException
      */
-    public function handleException()
+    public function handleException(): AbstractResponse
     {
         $handler = $this->getExceptionHandler();
 
@@ -104,12 +105,12 @@ abstract class AbstractHandler
     /**
      * Validate response from handle method of handler class.
      *
-     * @param ErrorHandledInterface|ErrorHandledCollectionInterface
+     * @param ErrorHandledInterface|ErrorHandledCollectionInterface $error
      * @return ErrorHandledCollectionInterface
      *
      * @throws \SMartins\Exceptions\Response\InvalidContentException
      */
-    public function validatedHandledException($error)
+    public function validatedHandledException($error): ErrorHandledCollectionInterface
     {
         if ($error instanceof ErrorHandledCollectionInterface) {
             return $error->validatedContent(ErrorHandledInterface::class);
@@ -123,9 +124,9 @@ abstract class AbstractHandler
     /**
      * Get the class the will handle the Exception from exceptionHandlers attributes.
      *
-     * @return mixed
+     * @return AbstractHandler
      */
-    public function getExceptionHandler()
+    public function getExceptionHandler(): AbstractHandler
     {
         $handlers = $this->getConfiguredHandlers();
 
@@ -139,9 +140,9 @@ abstract class AbstractHandler
     /**
      * Get exception handlers from internal and set on App\Exceptions\Handler.php.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function getConfiguredHandlers()
+    public function getConfiguredHandlers(): array
     {
         return array_merge($this->internalExceptionHandlers, $this->exceptionHandlers);
     }
@@ -151,7 +152,7 @@ abstract class AbstractHandler
      *
      * @return string
      */
-    public function getDefaultPointer()
+    public function getDefaultPointer(): string
     {
         return '';
     }
@@ -161,7 +162,7 @@ abstract class AbstractHandler
      *
      * @return string
      */
-    public function getDefaultTitle()
+    public function getDefaultTitle(): string
     {
         return Str::snake(class_basename($this->exception));
     }
@@ -172,13 +173,13 @@ abstract class AbstractHandler
      *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         if (method_exists($this->exception, 'getStatusCode')) {
             return $this->exception->getStatusCode();
         }
 
-        return config('json-exception-handler.http_code');
+        return (int) config('json-exception-handler.http_code');
     }
 
     /**
@@ -186,7 +187,7 @@ abstract class AbstractHandler
      *
      * @return \SMartins\Exceptions\Handlers\Handler
      */
-    public function getDefaultHandler()
+    public function getDefaultHandler(): Handler
     {
         return new Handler($this->exception);
     }
@@ -197,7 +198,7 @@ abstract class AbstractHandler
      *
      * @return string
      */
-    public function getDefaultResponseHandler()
+    public function getDefaultResponseHandler(): string
     {
         return JsonApiResponse::class;
     }
@@ -209,7 +210,7 @@ abstract class AbstractHandler
      *       \SMartins\Exceptions\Response\AbstractResponse
      * @return string
      */
-    public function getResponseHandler()
+    public function getResponseHandler(): string
     {
         $response = config('json-exception-handler.response_handler');
 
@@ -219,10 +220,10 @@ abstract class AbstractHandler
     /**
      * Set exception handlers.
      *
-     * @param array $handlers
+     * @param array<string, string> $handlers
      * @return AbstractHandler
      */
-    public function setExceptionHandlers(array $handlers)
+    public function setExceptionHandlers(array $handlers): self
     {
         $this->exceptionHandlers = $handlers;
 
