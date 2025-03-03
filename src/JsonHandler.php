@@ -4,6 +4,7 @@ namespace SMartins\Exceptions;
 
 use SMartins\Exceptions\Handlers\Handler;
 use Throwable;
+use Illuminate\Http\JsonResponse;
 
 trait JsonHandler
 {
@@ -15,7 +16,7 @@ trait JsonHandler
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function jsonResponse(Throwable $exception)
+    public function jsonResponse(Throwable $exception): JsonResponse
     {
         $handler = new Handler($exception);
 

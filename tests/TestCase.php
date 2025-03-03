@@ -6,6 +6,7 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use SMartins\Exceptions\JsonHandlerServiceProvider;
 use SMartins\Exceptions\Tests\Fixtures\Exceptions\Handler;
+use Illuminate\Foundation\Application;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -15,7 +16,7 @@ abstract class TestCase extends BaseTestCase
      * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
         $app->singleton(
             ExceptionHandler::class,
@@ -30,7 +31,7 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             JsonHandlerServiceProvider::class,
