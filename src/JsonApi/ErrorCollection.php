@@ -27,7 +27,7 @@ class ErrorCollection extends Collection implements ErrorHandledCollectionInterf
      *
      * @return string|null
      */
-    public function getStatusCode()
+    public function getStatusCode(): ?string
     {
         return $this->statusCode;
     }
@@ -49,7 +49,7 @@ class ErrorCollection extends Collection implements ErrorHandledCollectionInterf
      *
      * @return self
      */
-    public function setStatusCode(string $statusCode)
+    public function setStatusCode(string $statusCode): self
     {
         $this->statusCode = $statusCode;
 
