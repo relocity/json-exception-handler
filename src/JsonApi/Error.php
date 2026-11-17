@@ -14,12 +14,12 @@ class Error implements Arrayable, ErrorHandledInterface
     /**
      * A unique identifier for this particular occurrence of the problem.
      *
-     * @var string
+     * @var string|null
      */
     protected $id;
 
     /**
-     * @var \SMartins\Exceptions\JsonApi\Links
+     * @var \SMartins\Exceptions\JsonApi\Links|null
      */
     protected $links;
 
@@ -47,25 +47,25 @@ class Error implements Arrayable, ErrorHandledInterface
 
     /**
      * A human-readable explanation specific to this occurrence of the problem.
-     * Like title, this field’s value can be localized.
+     * Like title, this field's value can be localized.
      *
-     * @var string
+     * @var string|null
      */
     protected $detail;
 
     /**
      * An object containing references to the source of the error.
      *
-     * @var \SMartins\Exceptions\JsonApi\Source
+     * @var \SMartins\Exceptions\JsonApi\Source|null
      */
     protected $source;
 
     /**
      * Get a unique identifier for this particular occurrence of the problem.
      *
-     * @return string
+     * @return string|null
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -87,9 +87,9 @@ class Error implements Arrayable, ErrorHandledInterface
     /**
      * Get the value of links.
      *
-     * @return \SMartins\Exceptions\JsonApi\Links
+     * @return \SMartins\Exceptions\JsonApi\Links|null
      */
-    public function getLinks()
+    public function getLinks(): ?Links
     {
         return $this->links;
     }
@@ -135,7 +135,7 @@ class Error implements Arrayable, ErrorHandledInterface
      *
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -179,17 +179,17 @@ class Error implements Arrayable, ErrorHandledInterface
     }
 
     /**
-     * Get like title, this field’s value can be localized.
+     * Get like title, this field's value can be localized.
      *
-     * @return string
+     * @return string|null
      */
-    public function getDetail()
+    public function getDetail(): ?string
     {
         return $this->detail;
     }
 
     /**
-     * Set like title, this field’s value can be localized.
+     * Set like title, this field's value can be localized.
      *
      * @param string $detail
      *
@@ -205,9 +205,9 @@ class Error implements Arrayable, ErrorHandledInterface
     /**
      * Get an object containing references to the source of the error.
      *
-     * @return \SMartins\Exceptions\JsonApi\Source
+     * @return \SMartins\Exceptions\JsonApi\Source|null
      */
-    public function getSource()
+    public function getSource(): ?Source
     {
         return $this->source;
     }
