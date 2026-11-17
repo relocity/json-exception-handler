@@ -1,0 +1,29 @@
+name: Trivy
+
+# Report-only vulnerability and secret scan from relocity/security-tools (TECH-24471).
+# On a pull request it reports only what the PR adds compared with its target branch.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+# One run per ref at a time, so a slow run for an older commit can never overwrite
+# the PR comment written by a newer one.
+concurrency:
+  group: trivy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  scan:
+    uses: relocity/security-tools/.github/workflows/trivy-scan.yml@2707415e1842ef4356ef959c528d92ced6388895 # develop 2026-11-16
+    with:
+      block-on-critical: false   # flip to true when we start blocking criticals
+    secrets:                     # only the secrets the scan needs
+      BETTERSTACK_INGEST_URL: ${{ secrets.BETTERSTACK_INGEST_URL }}
+      BETTERSTACK_SOURCE_TOKEN: ${{ secrets.BETTERSTACK_SOURCE_TOKEN }}
+      SLACK_SECURITY_ALERTS_WEBHOOK: ${{ secrets.SLACK_SECURITY_ALERTS_WEBHOOK }}
